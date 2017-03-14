@@ -2,7 +2,9 @@ package com.lionxxw.controller;
 
 import com.lionxxw.bean.Girl;
 import com.lionxxw.dao.GirlRepository;
+import com.lionxxw.domain.Result;
 import com.lionxxw.service.GirlService;
+import com.lionxxw.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,8 @@ public class GirlController {
      * @return
      */
     @GetMapping(value = "/girls")
-    public List<Girl> girlList(){
-        return girlRepository.findAll();
+    public Result<List<Girl>> girlList(){
+        return ResultUtils.getSuccess(girlRepository.findAll());
     }
 
     /**
@@ -39,12 +41,11 @@ public class GirlController {
      * @return
      */
     @PostMapping(value = "/girls")
-    public Girl girlAdd(@Valid Girl girl, BindingResult bindingResult){
+    public Result<Girl> girlAdd(@Valid Girl girl, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
-            System.out.println(bindingResult.getFieldError().getDefaultMessage());
-            return null;
+            return ResultUtils.getFail(-1, bindingResult.getFieldError().getDefaultMessage());
         }
-        return girlRepository.save(girl);
+        return ResultUtils.getSuccess(girlRepository.save(girl));
     }
 
     /**
@@ -53,8 +54,8 @@ public class GirlController {
      * @return
      */
     @GetMapping(value = "/girls/{id}")
-    public Girl girlFindOne(@PathVariable("id") Long id){
-        return girlRepository.findOne(id);
+    public Result<Girl> girlFindOne(@PathVariable("id") Long id){
+        return ResultUtils.getSuccess(girlRepository.findOne(id));
     }
 
     /**
@@ -64,9 +65,9 @@ public class GirlController {
      * @return
      */
     @PostMapping(value = "/girls/{id}")
-    public Girl girlUpdate(@PathVariable("id") Long id, Girl girl){
+    public Result<Girl> girlUpdate(@PathVariable("id") Long id, Girl girl){
         girl.setId(id);
-        return girlRepository.save(girl);
+        return ResultUtils.getSuccess(girlRepository.save(girl));
     }
 
     /**
@@ -84,8 +85,8 @@ public class GirlController {
      * @return
      */
     @GetMapping(value = "/girls/age/{age}")
-    public List<Girl> girlFindByAge(@PathVariable("age") Integer age){
-        return girlRepository.findByAge(age);
+    public Result<List<Girl>> girlFindByAge(@PathVariable("age") Integer age){
+        return ResultUtils.getSuccess(girlRepository.findByAge(age));
     }
 
     /**
@@ -94,5 +95,11 @@ public class GirlController {
     @GetMapping(value = "/girls/two")
     public void girlInsertTwo(){
         girlService.insertTwo();
+    }
+
+    @GetMapping(value = "/girls/getAge/{id}")
+    public Result<Girl> getGirlAge(@PathVariable("id") Long id) throws Exception{
+        Girl girl = girlService.getGirlAge(id);
+        return ResultUtils.getSuccess(girl);
     }
 }
