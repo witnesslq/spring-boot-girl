@@ -1,0 +1,6 @@
+server:
+  port: 8082
+girl:
+  cupSize: B
+  age: 18
+  #context: "大家好,我${age}岁了,我的罩杯是${cupSize}"
